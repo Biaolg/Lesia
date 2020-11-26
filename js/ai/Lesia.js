@@ -4,7 +4,8 @@ utils = new utils();
 class Lesia {
   constructor(master) {
     this.myMaster = master;
-    this.userList = new Map();
+    this.myList = new Map();//直连列表
+    this.serviceList = new Map();//服务链接列表
   }
   open(sheen = false) {
     console.log("hello " + this.myMaster + "!");
@@ -16,11 +17,12 @@ class Lesia {
   }
   //通道
   passageway(opposite, oppoList, msg) {
-    this.userList = oppoList;
+    this.myList = oppoList;
     let code = msg.code;
     let toMsg = {
       code: msg.code,
       state: true,
+      source: "Lesia",
       msg: "",
     };
     let send = () => {
@@ -39,12 +41,44 @@ class Lesia {
     }
   }
   //http监听
-  httpMonitor(reqObj) {}
+  httpMonitor(req, res) {
+    let adopt = ture;
+    return adopt;
+  }
   //ws监听
   wsMointor(wsObj) {
     // subject, userList, msg
-    let {subject, userList, msg} = wsObj;
-    if(msg.code == 0)
+    let adopt = ture;
+    let { subject, userList, msg } = wsObj;
+    this.serviceList = userList;
+    let toMsg = {
+      code: msg.code,
+      state: true,
+      source: "Lesia",
+      msg: "",
+    }
+    let send = () => {
+      subject.sendText(utils.wsMsgTemplate(toMsg));
+    };
+    let to = (user) => {
+      userList.forEach((item, key) => {
+        if (key == user) {
+          item.sendText(utils.wsMsgTemplate(toMsg));
+          subject.sendText(utils.wsMsgTemplate({
+            code: 100,//回调
+            state: true,
+            source: "Lesia"
+          }))
+        }
+      });
+    };
+    let broadcast = () => {
+      userList.forEach(item => {
+        item.sendText(utils.wsMsgTemplate(toMsg));
+      });
+    }
+
+    return adopt;
   }
 }
 

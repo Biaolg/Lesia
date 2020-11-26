@@ -16,7 +16,7 @@ const { autoInject } = require("async");
 utils = new utils();
 
 class Service {
-  constructor() {}
+  constructor() { }
   open() {
     this.httpRequest();
     this.wsCommunication();
@@ -43,8 +43,8 @@ class Service {
     //CORS 跨域资源共享
     //app.all(*)表示所有请求路径必须经过
     app.all("*", (req, res, next) => {
-      ai.httpMonitor(req);//ai监听
-      
+      let adopt = ai.httpMonitor(req, res);//ai监听
+
       //允许跨域地址
       res.header("Access-Control-Allow-Origin", req.headers.origin);
 
@@ -61,7 +61,7 @@ class Service {
       res.header("Access-Control-Allow-Credentials", true);
 
       //允许通过
-      next();
+      adopt && next();
     });
 
     //设置模板渲染
@@ -86,7 +86,7 @@ class Service {
   }
   //路由
   route(app) {
-    ai.httpMonitor(app); //开启ai监听
+
   }
   //ws
   wsCommunication() {
@@ -94,7 +94,11 @@ class Service {
   }
   //ws路由
   wsRoute(subject, userList, msg) {
-    ai.wsMointor({ subject: subject, userList: userList, msg: msg }); //开启ai监听
+    let adopt = ai.wsMointor({ subject: subject, userList: userList, msg: msg }); //开启ai监听
+
+    if (!adopt) {
+      return;
+    }
 
     let code = msg.code;
     let toMsg = {
@@ -102,11 +106,33 @@ class Service {
       state: true,
       msg: "",
     };
-    let send = () => {
+    let send = () => {//返回
       subject.sendText(utils.wsMsgTemplate(toMsg));
     };
+    let to = (user) => {//发送给某个用户
+      userList.forEach((item, key) => {
+        if (key == user) {
+          item.sendText(utils.wsMsgTemplate(toMsg));
+          subject.sendText(utils.wsMsgTemplate({
+            code: 100,//回调
+            state: true
+          }))
+        }
+      });
+    };
+    let broadcast = () => {//广播
+      userList.forEach(item => {
+        item.sendText(utils.wsMsgTemplate(toMsg));
+      });
+    }
     switch (code) {
-      case 1:
+      case 1://广播
+        toMsg.msg = msg.msg;
+        broadcast();
+        break;
+      case 2://对话
+        toMsg.msg = msg.msg;
+        to();
         break;
       default:
         toMsg.code = 1000;

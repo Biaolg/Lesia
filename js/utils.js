@@ -113,6 +113,13 @@ class utils {
             if (chatUsers.has(msg.userName)) {
               illegalVisit(0, "用户名已存在");
             } else {
+              chatUsers.forEach(item => {
+                item.sendText(JSON.stringify({
+                  code: 1,//广播
+                  state: true,
+                  msg: msg.userName + "已进入!"
+                }))
+              })
               chatUsers.set(msg.userName, conn);
             }
           } else {
