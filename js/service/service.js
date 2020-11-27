@@ -16,7 +16,7 @@ const { autoInject } = require("async");
 utils = new utils();
 
 class Service {
-  constructor() { }
+  constructor() {}
   open() {
     this.httpRequest();
     this.wsCommunication();
@@ -43,7 +43,7 @@ class Service {
     //CORS 跨域资源共享
     //app.all(*)表示所有请求路径必须经过
     app.all("*", (req, res, next) => {
-      let adopt = ai.httpMonitor(req, res);//ai监听
+      let adopt = ai.httpMonitor(req, res); //ai监听
 
       //允许跨域地址
       res.header("Access-Control-Allow-Origin", req.headers.origin);
@@ -86,7 +86,10 @@ class Service {
   }
   //路由
   route(app) {
-
+    app.get("/runTimer", (req, res) => {
+      //获取运行时间
+      res.send({ msg: ai.tool.timer, code: 0 });
+    });
   }
   //ws
   wsCommunication() {
@@ -94,7 +97,11 @@ class Service {
   }
   //ws路由
   wsRoute(subject, userList, msg) {
-    let adopt = ai.wsMointor({ subject: subject, userList: userList, msg: msg }); //开启ai监听
+    let adopt = ai.wsMointor({
+      subject: subject,
+      userList: userList,
+      msg: msg,
+    }); //开启ai监听
 
     if (!adopt) {
       return;
@@ -106,31 +113,36 @@ class Service {
       state: true,
       msg: "",
     };
-    let send = () => {//返回
+    let send = () => {
+      //返回
       subject.sendText(utils.wsMsgTemplate(toMsg));
     };
-    let to = (user) => {//发送给某个用户
+    let to = (user) => {
+      //发送给某个用户
       userList.forEach((item, key) => {
         if (key == user) {
           item.sendText(utils.wsMsgTemplate(toMsg));
-          subject.sendText(utils.wsMsgTemplate({
-            code: 100,//回调
-            state: true
-          }))
+          subject.sendText(
+            utils.wsMsgTemplate({
+              code: 100, //回调
+              state: true,
+            })
+          );
         }
       });
     };
-    let broadcast = () => {//广播
-      userList.forEach(item => {
+    let broadcast = () => {
+      //广播
+      userList.forEach((item) => {
         item.sendText(utils.wsMsgTemplate(toMsg));
       });
-    }
+    };
     switch (code) {
-      case 1://广播
+      case 1: //广播
         toMsg.msg = msg.msg;
         broadcast();
         break;
-      case 2://对话
+      case 2: //对话
         toMsg.msg = msg.msg;
         to();
         break;

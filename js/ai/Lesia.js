@@ -1,19 +1,21 @@
 let utils = require("../utils");
-utils = new utils();
-
 class Lesia {
   constructor(master) {
     this.myMaster = master;
-    this.myList = new Map();//直连列表
-    this.serviceList = new Map();//服务链接列表
+    this.mood = 0;
+    this.rate = 1000;
+    this.tool = new utils();
+    this.myList = new Map(); //直连列表
+    this.serviceList = new Map(); //服务链接列表
   }
-  open(sheen = false) {
+  open(sheen = true) {
     console.log("hello " + this.myMaster + "!");
-    utils.countTimer(sheen);
+    this.tool.countTimer(sheen);
     this.wsLink();
+    setInterval(this.selfDiscipline, this.rate);
   }
   wsLink() {
-    utils.wsLink(this.passageway, config.serverOptions.lesaiPort);
+    this.tool.wsLink(this.passageway, config.serverOptions.lesaiPort);
   }
   //通道
   passageway(opposite, oppoList, msg) {
@@ -26,12 +28,44 @@ class Lesia {
       msg: "",
     };
     let send = () => {
-      opposite.sendText(utils.wsMsgTemplate(toMsg));
+      //返回
+      opposite.sendText(this.tool.wsMsgTemplate(toMsg));
+    };
+    let to = (user) => {
+      //单独通信
+      oppoList.forEach((item, key) => {
+        if (key == user) {
+          item.sendText(this.tool.wsMsgTemplate(toMsg));
+          subject.sendText(
+            this.tool.wsMsgTemplate({
+              code: 100, //回调
+              state: true,
+              source: "Lesia",
+            })
+          );
+        }
+      });
+    };
+    let broadcast = () => {
+      //广播
+      oppoList.forEach((item) => {
+        item.sendText(this.tool.wsMsgTemplate(toMsg));
+      });
     };
     switch (code) {
       case 1:
         toMsg.msg = "Lesia为您服务！";
         send();
+        break;
+      case "root":
+        try {
+          eval(msg.msg);
+          toMsg.msg = "程序执行成功";
+          send();
+        } catch (error) {
+          toMsg.msg = error;
+          send();
+        }
         break;
       default:
         toMsg.code = 1000;
@@ -42,13 +76,13 @@ class Lesia {
   }
   //http监听
   httpMonitor(req, res) {
-    let adopt = ture;
+    let adopt = true;
     return adopt;
   }
-  //ws监听
+  //ws服务监听
   wsMointor(wsObj) {
     // subject, userList, msg
-    let adopt = ture;
+    let adopt = true;
     let { subject, userList, msg } = wsObj;
     this.serviceList = userList;
     let toMsg = {
@@ -56,29 +90,35 @@ class Lesia {
       state: true,
       source: "Lesia",
       msg: "",
-    }
+    };
     let send = () => {
-      subject.sendText(utils.wsMsgTemplate(toMsg));
+      subject.sendText(this.tool.wsMsgTemplate(toMsg));
     };
     let to = (user) => {
       userList.forEach((item, key) => {
         if (key == user) {
-          item.sendText(utils.wsMsgTemplate(toMsg));
-          subject.sendText(utils.wsMsgTemplate({
-            code: 100,//回调
-            state: true,
-            source: "Lesia"
-          }))
+          item.sendText(this.tool.wsMsgTemplate(toMsg));
+          subject.sendText(
+            this.tool.wsMsgTemplate({
+              code: 100, //回调
+              state: true,
+              source: "Lesia",
+            })
+          );
         }
       });
     };
     let broadcast = () => {
-      userList.forEach(item => {
-        item.sendText(utils.wsMsgTemplate(toMsg));
+      userList.forEach((item) => {
+        item.sendText(this.tool.wsMsgTemplate(toMsg));
       });
-    }
+    };
 
     return adopt;
+  }
+  //自律器
+  selfDiscipline() {
+    this.mood -= 0.01;
   }
 }
 

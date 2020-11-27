@@ -17,12 +17,17 @@ class utils {
     return day + "天" + hour + "时" + minute + "分" + second + "秒";
   }
   //运行计时器
-  countTimer(sheen) {
+  countTimer(sheen = false) {
+    if (this.timer != this.timer) {
+      this.timer = 0;
+    }
     let runDate = this.secondsFormat(this.timer++);
 
-    let timer = setTimeout(() => {
-      this.countTimer(sheen);
-    }, 1000);
+    if (sheen) {
+      setTimeout(() => {
+        this.countTimer(true);
+      }, 1000);
+    }
 
     fs.writeFile(
       global.BasicsPath + "/journal/runTimer.txt",
@@ -32,12 +37,7 @@ class utils {
       }
     );
 
-    if (sheen) {
-      console.log("运行时间:", runDate);
-      console.log("运行次数:", this.timer);
-    }
-
-    return timer;
+    return this.timer;
   }
   //随机数组生成器
   randomArr(lengthMax = 100, dataMax = 256) {
@@ -113,13 +113,16 @@ class utils {
             if (chatUsers.has(msg.userName)) {
               illegalVisit(0, "用户名已存在");
             } else {
-              chatUsers.forEach(item => {
-                item.sendText(JSON.stringify({
-                  code: 1,//广播
-                  state: true,
-                  msg: msg.userName + "已进入!"
-                }))
-              })
+              chatUsers.forEach((item) => {
+                item.sendText(
+                  JSON.stringify({
+                    code: 1, //广播
+                    state: true,
+                    userName: msg.userName,
+                    msg: msg.userName + "已进入!",
+                  })
+                );
+              });
               chatUsers.set(msg.userName, conn);
             }
           } else {
