@@ -39,14 +39,18 @@ class utils {
 
     return this.timer;
   }
-  //随机数组生成器
-  randomArr(lengthMax = 100, dataMax = 256) {
+  randomColor(length = 3, dataMax = 256) {
     let array = [];
-    let length = parseInt(Math.random() * lengthMax);
     for (let i = 0; i < length; i++) {
       array.push(parseInt(Math.random() * dataMax));
     }
-    return array;
+    let color = {
+      color: array,
+    };
+    color.fanColor = array.map((item) => {
+      return 255 - item;
+    });
+    return color;
   }
   //url 处理函数
   params(options) {
@@ -116,17 +120,22 @@ class utils {
               chatUsers.forEach((item) => {
                 item.sendText(
                   JSON.stringify({
-                    code: 1, //广播
+                    code: 11, //进入广播
                     state: true,
                     userName: msg.userName,
-                    msg: msg.userName + "已进入!",
+                    msg: msg.userName,
                   })
                 );
               });
               chatUsers.set(msg.userName, conn);
+              if (chatUsers.has(msg.userName)) {
+                fnMsg(conn, chatUsers, msg);
+              } else {
+                illegalVisit(1000, "非法访问,您未被Lesia记录！");
+              }
             }
-          } else {
-            if (userList.has(msg.userName)) {
+          }else{
+            if (chatUsers.has(msg.userName)) {
               fnMsg(conn, chatUsers, msg);
             } else {
               illegalVisit(1000, "非法访问,您未被Lesia记录！");

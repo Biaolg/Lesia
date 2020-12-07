@@ -97,6 +97,7 @@ class Service {
   }
   //ws路由
   wsRoute(subject, userList, msg) {
+    
     let adopt = ai.wsMointor({
       subject: subject,
       userList: userList,
@@ -109,27 +110,38 @@ class Service {
 
     let code = msg.code;
     let toMsg = {
+      userName: msg.userName,
       code: msg.code,
       state: true,
       msg: "",
+      yourColor: null,
     };
+    let strUserList = [];
+    userList.forEach((item, key) => {
+      strUserList.push(key);
+    });
     let send = () => {
       //返回
       subject.sendText(utils.wsMsgTemplate(toMsg));
     };
-    let to = (user) => {
+    let to = (user = msg.toUser) => {
       //发送给某个用户
-      userList.forEach((item, key) => {
-        if (key == user) {
-          item.sendText(utils.wsMsgTemplate(toMsg));
-          subject.sendText(
-            utils.wsMsgTemplate({
-              code: 100, //回调
-              state: true,
-            })
-          );
-        }
-      });
+      if (userList.has(user)) {
+        userList.forEach((item, key) => {
+          if (key == user) {
+            item.sendText(utils.wsMsgTemplate(toMsg));
+            subject.sendText(
+              utils.wsMsgTemplate({
+                code: 100, //回调
+                state: true,
+              })
+            );
+          }
+        });
+      } else {
+        toMsg.msg = "对方不在线";
+        send();
+      }
     };
     let broadcast = () => {
       //广播
@@ -138,8 +150,14 @@ class Service {
       });
     };
     switch (code) {
+      case 0:
+        toMsg.msg = strUserList;
+        toMsg.yourColor = utils.randomColor();
+        send();
+        break;
       case 1: //广播
         toMsg.msg = msg.msg;
+        toMsg.yourColor = msg.yourColor;
         broadcast();
         break;
       case 2: //对话

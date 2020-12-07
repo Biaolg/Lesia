@@ -10,10 +10,56 @@
 
 <body>
     <!-- 背景 -->
-    <div class="bgBox">
+    <div id="bgBox">
         <canvas id="bg" width="1920" height="1080"></canvas>
     </div>
-    
+
+    <div id="land">
+        <div class="frame">
+            <div class="title">
+                <h3 id="landTitle">请输入昵称</h3>
+            </div>
+            <div class="inputBox">
+                <input type="text" id="landInput">
+            </div>
+            <div class="btn">
+                <button id="landBtn">join</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="chat">
+        <div class="sheen">
+            <div class="list" id="list">
+                <!-- <div class="item">
+                    <div class="head">test</div>
+                    <div class="msg">测试信息</div>
+                </div>
+                <div class="r">
+                    <div class="item">
+                        <div class="msg">测试信息</div>
+                        <div class="head">test</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="head">test</div>
+                    <div class="msg">测试信息</div>
+                </div> -->
+            </div>
+        </div>
+        <div class="to">
+            <div class="inputBox">
+                <input type="text" id="chatInput">
+            </div>
+            <div class="btn">
+                <button class="btnBox" id="chatBtn">发送</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/bgCanvas.js"></script>
+    <script src="./js/service.js"></script>
+    <script src="./js/behavior.js"></script>
     <script src="./js/index.js"></script>
 </body>
 

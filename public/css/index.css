@@ -2,12 +2,12 @@
   margin: 0;
   padding: 0;
 }
-.bgBox {
+#bgBox {
   position: flex;
   top: 0;
   left: 0;
   z-index: -1;
-  background-color: #000;
+  background-image: linear-gradient(#fff, #000, #000, #000, #fff);
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -15,9 +15,153 @@
   align-items: center;
   overflow: hidden;
 }
-.bgBox #bg {
+#bgBox #bg {
   width: 100%;
   display: block;
   background-color: #fff;
   position: flex;
+}
+#land {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  background-color: #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transition: all 1s;
+  z-index: 100;
+}
+#land .frame {
+  border-radius: 30px;
+  border: #fff 3px solid;
+  color: #fff;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#land .frame .inputBox {
+  margin-top: 30px;
+}
+#land .frame .inputBox input {
+  padding: 4px;
+  text-align: center;
+  background: none;
+  outline: none;
+  border: solid #fff 2px;
+  border-radius: 50px;
+  color: #fff;
+}
+#land .frame .btn {
+  margin-top: 30px;
+}
+#land .frame .btn button {
+  float: right;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  border: 0px solid transparent;
+  outline: none;
+  color: #fff;
+  font-size: 16px;
+}
+#land .frame .btn button:hover {
+  color: aquamarine;
+}
+#chat {
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#chat .sheen {
+  width: 100vw;
+  height: 100vh;
+}
+#chat .sheen .list {
+  display: flex;
+  flex-direction: column;
+}
+#chat .sheen .item {
+  display: flex;
+  margin: 10px;
+}
+#chat .sheen .item .head {
+  min-width: 40px;
+  min-height: 40px;
+  width: 3vw;
+  height: 3vw;
+  border-radius: 10px;
+  background-color: #3296fa;
+  color: #fff;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#chat .sheen .item .msg {
+  margin: 0px 10px 10px 10px;
+  border-radius: 10px;
+  border: 1px solid #282828;
+  padding: 10px;
+}
+#chat .sheen .r {
+  display: flex;
+  flex-direction: row-reverse;
+}
+#chat .to {
+  position: absolute;
+  bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50vw;
+  transition: opacity 1s;
+  opacity: 0.5;
+}
+#chat .to .inputBox {
+  width: 100%;
+}
+#chat .to .inputBox input {
+  width: 100%;
+  padding: 4px;
+  background: none;
+  outline: none;
+  border: solid #3296fa 2px;
+  border-radius: 50px;
+}
+#chat .to:hover {
+  opacity: 1;
+}
+#chat .to .btn {
+  position: absolute;
+  right: -15px;
+}
+#chat .to .btn button {
+  width: 100px;
+  color: #fff;
+  float: right;
+  margin: 0;
+  padding: 0;
+  padding: 3px;
+  background-color: #3296fa;
+  border: 2px solid transparent;
+  outline: none;
+  font-size: 16px;
+  border-radius: 50px;
+  transition: all 0.3s;
+}
+#chat .to .btn button:hover {
+  background-color: #fff;
+  color: #3296fa;
+  font-weight: 700;
+  border: 2px #3296fa solid;
 }
