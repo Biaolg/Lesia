@@ -55,8 +55,21 @@ function msghandle(evt) {
 }
 
 function msgUi(msg) {
-  let tem = `<div class="item"><div class="head">${msg.userName}</div><div class="msg">${msg.msg}</div></div>`;
-  let temR = `<div class="r"><div class="item"><div class="msg">${msg.msg}</div><div class="head">${msg.userName}</div></div></div>`;
+  let color = "rgba(";
+  msg.yourColor.color.forEach((item, index) => {
+    color += item+",";
+  });
+  color += "0.7)";
+  console.log(color);
+
+  let fcolor = "rgba(";
+  msg.yourColor.fanColor.forEach((item, index) => {
+    fcolor += item+",";
+  });
+  fcolor += "0.5)";
+
+  let tem = `<div class="item"><div class="head" style="color:${color};background-color:${fcolor}">${msg.userName}</div><div class="msg" style="color:${fcolor};background-color:${color}">${msg.msg}</div></div>`;
+  let temR = `<div class="r"><div class="item"><div class="msg" style="color:${color};background-color:${fcolor}">${msg.msg}</div><div class="head" style="color:${fcolor};background-color:${color}">${msg.userName}</div></div></div>`;
   if (msg.userName == template.userName) {
     getDom("#list").innerHTML += temR;
   } else {

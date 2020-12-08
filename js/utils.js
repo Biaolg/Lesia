@@ -44,6 +44,7 @@ class utils {
     for (let i = 0; i < length; i++) {
       array.push(parseInt(Math.random() * dataMax));
     }
+    array[parseInt(Math.random() * 3)] = 255;
     let color = {
       color: array,
     };
